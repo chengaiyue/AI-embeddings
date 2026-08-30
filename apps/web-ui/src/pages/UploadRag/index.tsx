@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { deleteDocument, listDocuments, uploadDocument, type RagDocument } from '../../api/rag';
 import styles from './index.module.css';
 
@@ -7,6 +7,7 @@ export default function UploadRag() {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [files, setFiles] = useState<any>(null);
 
   const refresh = useCallback(async () => {
     try {
@@ -16,19 +17,11 @@ export default function UploadRag() {
     }
   }, []);
 
-  useEffect(() => {
-    void refresh();
-    // 处理中的文档每 3s 轮询一次状态
-    const timer = setInterval(() => void refresh(), 3000);
-    return () => clearInterval(timer);
-  }, [refresh]);
-
-  const handleUpload = async (file: File) => {
+  const handleChange = async (file: File) => {
     setUploading(true);
     setError(null);
     try {
-      await uploadDocument(file);
-      await refresh();
+      setFiles(file);
     } catch (e) {
       setError(e instanceof Error ? e.message : '上传失败');
     } finally {
@@ -42,6 +35,12 @@ export default function UploadRag() {
     await refresh();
   };
 
+  const handleUpload = async () => {
+    if (!files) return;
+    await uploadDocument(files);
+    await refresh();
+  }
+
   return (
     <div className={styles.container}>
       <section className={styles.uploadCard}>
@@ -54,12 +53,14 @@ export default function UploadRag() {
           disabled={uploading}
           onChange={(e) => {
             const file = e.target.files?.[0];
-            if (file) void handleUpload(file);
+            if (file) void handleChange(file);
           }}
         />
         {uploading && <p className={styles.processing}>上传中，服务端正在解析并向量化…</p>}
         {error && <p className={styles.error}>{error}</p>}
       </section>
+
+      <button onClick={handleUpload}>确定上传</button>
 
       <section>
         <h2>知识库文档（{documents.length}）</h2>
