@@ -1,0 +1,30 @@
+.layout {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  height: 56px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.header nav a {
+  margin-left: 16px;
+  color: #6b7280;
+  text-decoration: none;
+}
+
+.header nav a.active {
+  color: #2563eb;
+  font-weight: 600;
+}
+
+.main {
+  flex: 1;
+  overflow: auto;
+}

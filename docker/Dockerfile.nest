@@ -1,0 +1,17 @@
+FROM node:20-alpine AS build
+WORKDIR /app
+
+RUN corepack enable
+COPY pnpm-workspace.yaml package.json ./
+COPY apps/nest-backend/package.json apps/nest-backend/
+RUN pnpm install --filter @ai-rag/nest-backend --no-frozen-lockfile
+
+COPY apps/nest-backend apps/nest-backend
+RUN pnpm --filter @ai-rag/nest-backend build && \
+    pnpm --filter @ai-rag/nest-backend --prod deploy /out
+
+FROM node:20-alpine
+WORKDIR /app
+COPY --from=build /out ./
+EXPOSE 3000
+CMD ["node", "dist/main.js"]

@@ -1,0 +1,51 @@
+.container {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.uploadCard {
+  border: 1px dashed #94a3b8;
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.hint {
+  color: #6b7280;
+  font-size: 13px;
+}
+
+.processing {
+  color: #2563eb;
+}
+
+.error {
+  color: #dc2626;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  border-bottom: 1px solid #e5e7eb;
+  padding: 8px 12px;
+  text-align: left;
+  font-size: 14px;
+}
+
+.processing {
+  color: #d97706;
+}
+
+.ready {
+  color: #16a34a;
+}
+
+.failed {
+  color: #dc2626;
+}

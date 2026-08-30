@@ -1,0 +1,56 @@
+services:
+  web-ui:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.web
+    ports:
+      - "8080:80"
+    depends_on:
+      - nest-backend
+    restart: unless-stopped
+
+  nest-backend:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.nest
+    environment:
+      PORT: 3000
+      # 内网 DNS 名称访问 Python 服务（注意：ai-service 不映射公网端口）
+      AI_SERVICE_URL: http://ai-service:8000
+      AI_SERVICE_TOKEN: ${AI_SERVICE_TOKEN:-dev-internal-token}
+      DATABASE_URL: /data/nest.db
+      JWT_SECRET: ${JWT_SECRET:-change-me-in-production}
+      CORS_ORIGIN: http://localhost:8080
+    volumes:
+      - nest-data:/data
+    depends_on:
+      - ai-service
+    restart: unless-stopped
+
+  # 内部 AI 服务：不映射公网端口，仅在同一 compose 网络内可达
+  ai-service:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.ai
+    environment:
+      AI_INTERNAL_TOKEN: ${AI_SERVICE_TOKEN:-dev-internal-token}
+      AI_VECTOR_STORE_URL: http://qdrant:6333
+      AI_LLM_API_KEY: ${LLM_API_KEY:-}
+    restart: unless-stopped
+
+  qdrant:
+    image: qdrant/qdrant:latest
+    volumes:
+      - qdrant-data:/qdrant/storage
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    volumes:
+      - redis-data:/data
+    restart: unless-stopped
+
+volumes:
+  nest-data:
+  qdrant-data:
+  redis-data:
