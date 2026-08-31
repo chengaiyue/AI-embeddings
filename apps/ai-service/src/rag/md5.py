@@ -22,6 +22,7 @@ class MD5:
 
 	# 根据md5文件，写入md5值
 	def write_md5(self, md5: str) -> None:
+		os.makedirs(os.path.dirname(self.file_path) or ".", exist_ok=True)
 		with open(self.file_path, "w", encoding="utf-8") as f:
 			f.write(md5 + '\n')
 
@@ -30,7 +31,7 @@ class MD5:
 		if not os.path.exists(self.file_path):
 			return False
 		with open(self.file_path, "r", encoding="utf-8") as f:
-				return md5 in f.readlines()
+			return md5 in f.readlines()
 
 	# 根据字符串生成md5, 判断md5是否在文件中, 如果没有就将md5写入文件
 	def md5_and_write(self, s: str, encoding: str = "utf-8") -> str:
@@ -40,5 +41,7 @@ class MD5:
 		return md5
 
 if __name__ == "__main__":
-	_md5 = MD5("test.md5")
-	print(_md5.md5_and_write("test"))
+	# _md5 = MD5("test.md5")
+	# print(_md5.md5_and_write("test"))
+	# print(_md5.md5_and_write("test"))
+  pass
