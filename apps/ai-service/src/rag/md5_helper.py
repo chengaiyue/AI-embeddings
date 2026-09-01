@@ -4,7 +4,7 @@ load_dotenv()
 
 import hashlib
 
-class MD5:
+class CustomMD5:
 	def __init__(self, file_path: str) -> None:
 		self.file_path = os.environ.get("FILE_MD5_PATH") or file_path
 
@@ -23,7 +23,7 @@ class MD5:
 	# 根据md5文件，写入md5值
 	def write_md5(self, md5: str) -> None:
 		os.makedirs(os.path.dirname(self.file_path) or ".", exist_ok=True)
-		with open(self.file_path, "w", encoding="utf-8") as f:
+		with open(self.file_path, "a", encoding="utf-8") as f:
 			f.write(md5 + '\n')
 
 	# 判断当前md5在文件中是否存在
@@ -39,6 +39,8 @@ class MD5:
 		if not self.md5_exists(md5):
 			self.write_md5(md5)
 		return md5
+
+default_md5_helper = CustomMD5(file_path="./default.md5")
 
 if __name__ == "__main__":
 	# _md5 = MD5("test.md5")
