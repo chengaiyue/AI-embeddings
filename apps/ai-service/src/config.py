@@ -2,7 +2,6 @@ from functools import lru_cache
 
 from pydantic_settings import BaseSettings
 
-
 class Settings(BaseSettings):
     """配置全部来自环境变量（支持 .env），与 nest-backend 的 .env 保持一致"""
 
